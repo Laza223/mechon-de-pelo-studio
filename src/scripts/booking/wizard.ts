@@ -85,7 +85,10 @@ export function initWizard() {
 
   next.addEventListener('click', () => { if (i < steps.length - 1) go(i + 1); });
   prev.addEventListener('click', () => { if (i > 0) go(i - 1); });
-  form.addEventListener('input', update);
+  form.addEventListener('input', (e) => {
+    if ((e.target as HTMLInputElement).name === 'name') nameErr.hidden = true;
+    update();
+  });
   form.addEventListener('change', update);
   form.addEventListener('submit', (e) => e.preventDefault());
 

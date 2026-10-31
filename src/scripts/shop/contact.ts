@@ -17,13 +17,16 @@ export async function sendWhatsApp(message: string) {
     window.open(whatsappUrl(c, message), '_blank', 'noopener');
     return;
   }
-  const ok = await copyText(message);
-  toast(ok ? 'Copiamos tu mensaje 🤎 Pegalo en el chat de WhatsApp.' : 'Abrimos WhatsApp: contanos qué necesitás 🤎', 5000);
+  // copiar arranca mientras la página tiene foco; abrir va sincrónico (si no, Safari bloquea el popup)
+  const copied = copyText(message);
   window.open(c.whatsappLink, '_blank', 'noopener');
+  const ok = await copied;
+  toast(ok ? 'Copiamos tu mensaje 🤎 Pegalo en el chat de WhatsApp.' : 'Abrimos WhatsApp: contanos qué necesitás 🤎', 5000);
 }
 
 export async function sendInstagram(message: string) {
-  const ok = await copyText(message);
-  toast(ok ? 'Copiamos tu mensaje 🤎 Pegalo en el chat de Instagram.' : 'Abrimos Instagram: escribinos por DM 🤎', 5000);
+  const copied = copyText(message);
   window.open(igDirect(contactConfig()), '_blank', 'noopener');
+  const ok = await copied;
+  toast(ok ? 'Copiamos tu mensaje 🤎 Pegalo en el chat de Instagram.' : 'Abrimos Instagram: escribinos por DM 🤎', 5000);
 }

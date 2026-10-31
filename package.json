@@ -8,7 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "seed:sanity": "node --env-file=.env scripts/seed-sanity.mjs"
+    "seed:sanity": "node --env-file=.env scripts/seed-sanity.ts"
   },
   "dependencies": {
     "@astrojs/react": "^7.1.2",

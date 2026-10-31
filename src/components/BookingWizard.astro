@@ -196,10 +196,10 @@ const slots = ['Mañana', 'Tarde', 'Noche'];
   .wizard__send[hidden] { display: none; }
 
   /* Sin JS: todos los pasos visibles */
-  :global(html:not(.has-js)) .wizard__step[hidden] { display: grid; }
+  :global(html:not(.has-js)) .wizard__step[hidden] { display: grid !important; }
   :global(html:not(.has-js)) .wizard__nav [data-next],
   :global(html:not(.has-js)) .wizard__progress { display: none; }
-  :global(html:not(.has-js)) .wizard__send[hidden] { display: flex; }
+  :global(html:not(.has-js)) .wizard__send[hidden] { display: flex !important; }
 
   @media (max-width: 960px) {
     .booking__grid { grid-template-columns: 1fr; }

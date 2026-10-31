@@ -89,9 +89,11 @@ export function initBag() {
       const item = byId.get(id);
       add.classList.add('is-added');
       setTimeout(() => add.classList.remove('is-added'), 1200);
+      // el header vuelve a aparecer para que la bolsita quede a mano
+      document.querySelector('[data-header]')?.classList.remove('is-hidden');
       const badge = document.querySelector('.header__bag');
       if (badge) gsap.fromTo(badge, { scale: 1 }, { scale: 1.18, duration: 0.18, yoyo: true, repeat: 1, ease: 'power2.out' });
-      toast(`${item?.name ?? 'Producto'} se sumó a tu consulta`);
+      toast(`${item?.name ?? 'Producto'} se sumó a tu consulta`, 4200, { label: 'Ver consulta', onClick: open });
       return;
     }
     if (t.closest('[data-bag-open]')) { open(); return; }
