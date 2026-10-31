@@ -1,0 +1,95 @@
+---
+import ProductCard from './ProductCard.astro';
+import ProductVisual from './ProductVisual.astro';
+import Media from './Media.astro';
+import Icon from './Icon.astro';
+import { getContent } from '../lib/content';
+const { products } = await getContent();
+const available = products.filter((p) => p.stock !== 'agotado');
+const featured = available.filter((p) => p.featured).slice(0, 4);
+const list = featured.length >= 4 ? featured : [...featured, ...available.filter((p) => !p.featured)].slice(0, 4);
+const hero = list[0];
+---
+<section class="shop section section--dark" id="productos" aria-labelledby="shop-title" data-shop>
+  <div class="container">
+    <div class="shop__hero">
+      <div class="shop__intro">
+        <p class="eyebrow" data-reveal="fade">Nuevo en Mechón de Pelo</p>
+        <h2 id="shop-title" class="shop__title" data-split="lines">
+          Tratamientos <span class="script shop__script">en casa</span>
+        </h2>
+        <p class="lead" data-reveal="up">
+          Ahora también podés llevar el cuidado de tu cabello a casa. Productos que usamos y recomendamos,
+          para que el resultado dure más.
+        </p>
+        {hero && (
+          <div class="shop__featured" data-reveal="up">
+            <p class="caps">Destacado</p>
+            <p class="shop__featured-name">{hero.name}</p>
+            <ul role="list" class="shop__benefits">
+              {hero.benefits.map((b) => <li><Icon name="check" size={16} /> {b}</li>)}
+            </ul>
+            <button type="button" class="btn btn--light" data-bag-add={hero.id} data-magnetic>
+              <Icon name="plus" class="btn__icon" /> Sumar a mi consulta
+            </button>
+          </div>
+        )}
+      </div>
+      <div class="shop__stage" data-product-stage aria-hidden="true">
+        <div class="shop__halo"></div>
+        {hero && (
+          <div class="shop__product" data-product-dom>
+            {hero.image ? <Media img={hero.image} sizes="40vw" /> : hero.visual && <ProductVisual uid={`hero-${hero.id}`} visual={hero.visual} brand={hero.brand} />}
+          </div>
+        )}
+      </div>
+    </div>
+
+    <div class="shop__grid">
+      {list.map((p) => <ProductCard product={p} tone="dark" />)}
+    </div>
+
+    <div class="shop__more">
+      <a class="btn btn--ghost-light" href="/productos" data-magnetic>Ver todos los productos <Icon name="arrow" class="btn__icon" /></a>
+      <p class="shop__disclaimer">Stock sujeto a disponibilidad · Coordinamos pago y entrega por WhatsApp</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .shop { background: var(--ink); border-radius: clamp(28px, 4vw, 56px); margin-inline: clamp(0px, 1vw, 12px); }
+  .shop__hero {
+    display: grid; grid-template-columns: 5fr 7fr; gap: clamp(2rem, 4vw, 5rem); align-items: center;
+    min-height: min(92svh, 900px);
+    margin-bottom: clamp(4rem, 8vw, 8rem);
+  }
+  .shop__intro { display: grid; gap: 1.8rem; }
+  .shop__title { font-size: var(--fs-3xl); font-weight: 300; }
+  .shop__script { display: block; font-size: 1.15em; color: var(--gold-1); margin-top: -0.05em; padding-left: 0.8em; line-height: 1.1; }
+  .shop__featured { display: grid; gap: 0.9rem; padding-top: 1.6rem; border-top: 1px solid var(--line); justify-items: start; }
+  .shop__featured .caps { color: var(--gold-2); }
+  .shop__featured-name { font-family: var(--font-display); font-size: var(--fs-2xl); line-height: 1; }
+  .shop__benefits { display: flex; flex-wrap: wrap; gap: 0.5rem 1.4rem; font-size: var(--fs-sm); color: var(--fg-soft); }
+  .shop__benefits li { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .shop__benefits :global(svg) { color: var(--gold-2); }
+
+  .shop__stage { position: relative; aspect-ratio: 1; width: 100%; display: grid; place-items: center; }
+  .shop__halo {
+    position: absolute; inset: 8%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(234 215 174 / 0.22) 0%, rgb(201 162 95 / 0.06) 45%, transparent 70%);
+  }
+  .shop__product { position: relative; width: 52%; aspect-ratio: 3 / 4; transition: opacity 0.8s; }
+  :global(html.gl-on) .shop__product { opacity: 0; }
+
+  .shop__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(1rem, 2vw, 2rem); }
+  .shop__more { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-top: clamp(3rem, 5vw, 5rem); }
+  .shop__disclaimer { font-size: var(--fs-xs); letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-soft); }
+
+  @media (max-width: 1100px) { .shop__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 900px) {
+    .shop__hero { grid-template-columns: 1fr; min-height: 0; }
+    .shop__stage { order: -1; width: min(100%, 520px); justify-self: center; }
+  }
+  @media (max-width: 520px) { .shop__grid { grid-template-columns: 1fr 1fr; gap: 1rem; } }
+</style>

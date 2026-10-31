@@ -1,0 +1,93 @@
+---
+import Swoosh from './Swoosh.astro';
+import Icon from './Icon.astro';
+import { getContent } from '../lib/content';
+import { whatsappUrl, defaultBookingMessage, igProfile } from '../lib/links';
+const { settings } = await getContent();
+const year = new Date().getFullYear();
+---
+<footer class="footer" data-footer>
+  <div class="container footer__top">
+    <p class="eyebrow">Tu próximo turno</p>
+    <h2 class="footer__cta display" data-split="chars">¿Agendamos<em>?</em></h2>
+    <div class="footer__actions">
+      <a class="btn btn--light" href={whatsappUrl(settings, defaultBookingMessage)} target="_blank" rel="noopener" data-magnetic>
+        <Icon name="whatsapp" class="btn__icon" /> Escribinos por WhatsApp
+      </a>
+      <a class="btn btn--ghost-light" href={igProfile(settings)} target="_blank" rel="noopener" data-magnetic>
+        <Icon name="instagram" class="btn__icon" /> @{settings.instagramHandle}
+      </a>
+    </div>
+  </div>
+
+  <div class="footer__brand" data-footer-brand>
+    <Swoosh id="ft" class="footer__swoosh" draw />
+    <p class="footer__word" aria-label="Mechón de Pelo">Mechón <span>de</span> Pelo</p>
+    <p class="footer__tag caps">Hair Studio</p>
+  </div>
+
+  <div class="container footer__bottom">
+    <ul role="list" class="footer__info">
+      <li><Icon name="pin" size={18} /> {settings.zone}</li>
+      <li><Icon name="calendar" size={18} /> Atención con turno previo</li>
+      <li><Icon name="casa" size={18} /> En el estudio o a domicilio</li>
+    </ul>
+    <nav aria-label="Pie de página" class="footer__nav">
+      <a class="link-underline" href="/#servicios">Servicios</a>
+      <a class="link-underline" href="/productos">Productos</a>
+      <a class="link-underline" href="/#turnos">Turnos</a>
+      <a class="link-underline" href="/#preguntas">Preguntas</a>
+    </nav>
+    <p class="footer__legal">© {year} Mechón de Pelo · Luján, Buenos Aires</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    background: var(--ink);
+    color: var(--ivory);
+    padding-top: var(--section);
+    overflow: clip;
+    border-radius: clamp(28px, 4vw, 56px) clamp(28px, 4vw, 56px) 0 0;
+  }
+  .footer .eyebrow { color: var(--gold-2); }
+  .footer__top { display: grid; justify-items: center; text-align: center; gap: 2rem; }
+  .footer__cta { font-size: var(--fs-3xl); font-size: clamp(3.4rem, 2rem + 7vw, 9rem); }
+  .footer__cta em { color: var(--gold-2); }
+  .footer__actions { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
+
+  .footer__brand {
+    position: relative;
+    margin-top: clamp(5rem, 10vw, 10rem);
+    display: grid; justify-items: center;
+    padding-inline: var(--gutter);
+  }
+  .footer__brand :global(.footer__swoosh) { width: min(58vw, 820px); margin-bottom: -4vw; margin-left: 6vw; }
+  .footer__word {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--fs-mega);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+    color: var(--ivory);
+  }
+  .footer__word span { font-size: 0.5em; }
+  .footer__tag { letter-spacing: 1.1em; margin-right: -1.1em; margin-top: 1.5rem; color: var(--taupe); }
+
+  .footer__bottom {
+    margin-top: clamp(4rem, 8vw, 7rem);
+    padding-block: 2rem 2.5rem;
+    border-top: 1px solid rgb(247 242 236 / 0.12);
+    display: grid; grid-template-columns: 1.4fr 1fr auto; gap: 2rem; align-items: center;
+    font-size: var(--fs-sm);
+    color: color-mix(in oklab, var(--ivory) 70%, var(--ink));
+  }
+  .footer__info { display: flex; flex-wrap: wrap; gap: 0.6rem 2rem; }
+  .footer__info li { display: inline-flex; align-items: center; gap: 0.6rem; }
+  .footer__nav { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+  @media (max-width: 900px) {
+    .footer__bottom { grid-template-columns: 1fr; }
+  }
+</style>

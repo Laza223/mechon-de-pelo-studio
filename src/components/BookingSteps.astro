@@ -1,0 +1,68 @@
+---
+import Icon from './Icon.astro';
+const steps = [
+  { icon: 'chat', title: 'Cómo reservar', text: 'Por WhatsApp o mensaje directo de Instagram.' },
+  { icon: 'sena', title: 'Seña', text: 'Únicamente para trenzas africanas.' },
+  { icon: 'casa', title: 'Domicilio', text: 'Se coordina al momento de reservar el turno.' },
+  { icon: 'pin', title: 'Zona', text: 'Luján, Buenos Aires.' },
+] as const;
+---
+<section class="steps section" id="turnos" aria-labelledby="steps-title" data-steps>
+  <div class="container">
+    <div class="section-head steps__head">
+      <p class="eyebrow" data-reveal="fade">Nuestros turnos</p>
+      <h2 id="steps-title" data-split="lines">Reservar es <em>simple</em></h2>
+      <p class="lead" data-reveal="up">Toda la información para reservar tu turno de forma simple y rápida.</p>
+    </div>
+
+    <div class="steps__track">
+      <svg class="steps__line" viewBox="0 0 1200 120" preserveAspectRatio="none" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="steps-g" x1="0" x2="1200" y1="0" y2="0" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#93703F" stop-opacity="0" />
+            <stop offset=".15" stop-color="#C9A25F" />
+            <stop offset=".5" stop-color="#EAD7AE" />
+            <stop offset=".85" stop-color="#C9A25F" />
+            <stop offset="1" stop-color="#93703F" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+        <path data-draw d="M0 70 C 120 10, 230 10, 300 60 S 480 110, 600 60 S 780 10, 900 60 S 1080 110, 1200 50" stroke="url(#steps-g)" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+      </svg>
+      <ol role="list" class="steps__list">
+        {steps.map((s, i) => (
+          <li class="step" data-reveal="up" style={`--i:${i}`}>
+            <span class="step__icon"><Icon name={s.icon} size={30} strokeWidth={1.1} /></span>
+            <span class="step__num caps">0{i + 1}</span>
+            <h3 class="step__title">{s.title}</h3>
+            <p class="step__text">{s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .steps__head h2 { font-weight: 300; }
+  .steps__track { position: relative; }
+  .steps__line { position: absolute; left: 0; right: 0; top: 10px; width: 100%; height: 90px; }
+  .steps__list { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+  .step { display: grid; gap: 0.7rem; justify-items: start; }
+  .step__icon {
+    width: 92px; height: 92px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: color-mix(in oklab, var(--sand) 85%, white);
+    color: var(--cocoa);
+    box-shadow: 0 20px 40px -26px rgb(46 32 25 / 0.45), inset 0 0 0 1px rgb(255 255 255 / 0.6);
+    margin-bottom: 1rem;
+  }
+  .step:nth-child(even) { margin-top: 3.5rem; }
+  .step__num { color: var(--mocha); }
+  .step__title { font-size: var(--fs-xl); }
+  .step__text { color: var(--fg-soft); font-size: var(--fs-sm); max-width: 24ch; }
+  @media (max-width: 900px) {
+    .steps__line { display: none; }
+    .steps__list { grid-template-columns: 1fr 1fr; row-gap: 3rem; }
+    .step:nth-child(even) { margin-top: 0; }
+  }
+</style>

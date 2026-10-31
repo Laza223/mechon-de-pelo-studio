@@ -1,0 +1,208 @@
+---
+import Icon from './Icon.astro';
+import { getContent } from '../lib/content';
+import { whatsappUrl, igDirect, defaultBookingMessage } from '../lib/links';
+const { services, settings } = await getContent();
+
+const options = [
+  ...services.map((s) => ({ value: s.title, cat: s.category, icon: s.icon, deposit: Boolean(s.requiresDeposit) })),
+  { value: 'Asesoramiento', cat: 'otro', icon: 'chat', deposit: false },
+] as const;
+const occasions = services.find((s) => s.category === 'peinados')?.occasions ?? ['XV', 'Casamientos', 'Egresos', 'Fiestas'];
+const lengths = ['Corto', 'Medio', 'Largo', 'Muy largo'];
+const slots = ['Mañana', 'Tarde', 'Noche'];
+---
+<section class="booking section" id="reservar" aria-labelledby="booking-title">
+  <div class="container booking__grid">
+    <div class="booking__intro">
+      <p class="eyebrow" data-reveal="fade">Reservá tu turno</p>
+      <h2 id="booking-title" class="booking__title" data-split="lines">Contanos qué <em>soñás</em> para tu pelo</h2>
+      <p class="lead" data-reveal="up">
+        Elegí el servicio y tu día preferido. Armamos el mensaje por vos y lo enviás por WhatsApp o Instagram en un toque.
+      </p>
+      <p class="booking__privacy" data-reveal="up"><Icon name="pin" size={18} /> {settings.bookingNote}</p>
+    </div>
+
+    <form class="wizard" data-wizard novalidate aria-describedby="wizard-help">
+      <p id="wizard-help" class="visually-hidden">Formulario de cuatro pasos. No se envía a ningún servidor: arma un mensaje para WhatsApp o Instagram.</p>
+      <div class="wizard__progress" aria-hidden="true">
+        {[1, 2, 3, 4].map((n) => <span class="wizard__dot" data-dot={n}></span>)}
+      </div>
+
+      <fieldset class="wizard__step" data-step="1">
+        <legend class="wizard__legend"><span class="caps">Paso 1 de 4</span>¿Qué servicio buscás?</legend>
+        <div class="wizard__options wizard__options--services">
+          {options.map((o, i) => (
+            <label class="opt">
+              <input type="radio" name="service" value={o.value} data-cat={o.cat} data-deposit={o.deposit ? '1' : '0'} required checked={i === 0} />
+              <span class="opt__box">
+                <Icon name={o.icon} size={22} />
+                <span>{o.value}</span>
+              </span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <fieldset class="wizard__step" data-step="2" hidden>
+        <legend class="wizard__legend"><span class="caps">Paso 2 de 4</span>Unos detalles</legend>
+        <div class="wizard__group" data-only="peinados">
+          <p class="wizard__label">¿Para qué ocasión?</p>
+          <div class="wizard__options">
+            {[...occasions, 'Otra'].map((o) => (
+              <label class="opt opt--chip"><input type="radio" name="occasion" value={o} /><span class="opt__box">{o}</span></label>
+            ))}
+          </div>
+        </div>
+        <div class="wizard__group">
+          <p class="wizard__label">Largo de tu pelo</p>
+          <div class="wizard__options">
+            {lengths.map((o) => (
+              <label class="opt opt--chip"><input type="radio" name="length" value={o} /><span class="opt__box">{o}</span></label>
+            ))}
+          </div>
+        </div>
+        <div class="wizard__group">
+          <p class="wizard__label">¿Dónde preferís?</p>
+          <div class="wizard__options">
+            <label class="opt opt--chip"><input type="radio" name="place" value="En el estudio" checked /><span class="opt__box">En el estudio</span></label>
+            <label class="opt opt--chip"><input type="radio" name="place" value="A domicilio" /><span class="opt__box">A domicilio</span></label>
+          </div>
+        </div>
+        <p class="wizard__deposit" data-deposit-note hidden><Icon name="sena" size={20} /> Las trenzas africanas requieren una seña para confirmar el turno.</p>
+      </fieldset>
+
+      <fieldset class="wizard__step" data-step="3" hidden>
+        <legend class="wizard__legend"><span class="caps">Paso 3 de 4</span>¿Cuándo te queda cómodo?</legend>
+        <label class="field">
+          <span class="wizard__label">Fecha preferida</span>
+          <input type="date" name="date" class="field__input" />
+        </label>
+        <div class="wizard__group">
+          <p class="wizard__label">Franja horaria</p>
+          <div class="wizard__options">
+            {slots.map((o) => (
+              <label class="opt opt--chip"><input type="radio" name="slot" value={o} /><span class="opt__box">{o}</span></label>
+            ))}
+            <label class="opt opt--chip"><input type="radio" name="slot" value="Soy flexible" /><span class="opt__box">Soy flexible</span></label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="wizard__step" data-step="4" hidden>
+        <legend class="wizard__legend"><span class="caps">Paso 4 de 4</span>¡Último paso!</legend>
+        <label class="field">
+          <span class="wizard__label">Tu nombre</span>
+          <input type="text" name="name" class="field__input" autocomplete="given-name" placeholder="¿Cómo te llamás?" required />
+          <span class="field__error" data-error-name hidden>Contanos tu nombre para poder responderte.</span>
+        </label>
+        <label class="field">
+          <span class="wizard__label">¿Algo más que quieras contarnos? <small>(opcional)</small></span>
+          <textarea name="notes" class="field__input" rows="2" placeholder="Ej.: tengo el pelo teñido, quiero algo con ondas…"></textarea>
+        </label>
+        <div class="wizard__preview">
+          <p class="caps">Tu mensaje</p>
+          <p class="wizard__message" data-preview></p>
+        </div>
+      </fieldset>
+
+      <div class="wizard__nav">
+        <button type="button" class="wizard__back link-underline" data-prev hidden>Volver</button>
+        <button type="button" class="btn" data-next>Continuar <Icon name="arrow" class="btn__icon" /></button>
+        <div class="wizard__send" data-send hidden>
+          <a class="btn" href={whatsappUrl(settings, defaultBookingMessage)} target="_blank" rel="noopener" data-send-wa>
+            <Icon name="whatsapp" class="btn__icon" /> Enviar por WhatsApp
+          </a>
+          <a class="btn btn--ghost" href={igDirect(settings)} target="_blank" rel="noopener" data-send-ig>
+            <Icon name="instagram" class="btn__icon" /> Por Instagram
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<style>
+  .booking__grid { display: grid; grid-template-columns: 5fr 7fr; gap: clamp(2rem, 5vw, 6rem); align-items: start; }
+  .booking__intro { display: grid; gap: 1.6rem; position: sticky; top: calc(var(--header-h) + 2rem); }
+  .booking__title { font-size: var(--fs-3xl); font-weight: 300; }
+  .booking__privacy { display: flex; gap: 0.6rem; font-size: var(--fs-sm); color: var(--fg-soft); max-width: 40ch; }
+  .booking__privacy :global(svg) { flex: none; margin-top: 0.2em; color: var(--cocoa); }
+
+  .wizard {
+    position: relative;
+    background: color-mix(in oklab, var(--cream) 80%, white);
+    border-radius: clamp(24px, 3vw, 40px);
+    padding: clamp(1.5rem, 3.5vw, 3.25rem);
+    box-shadow: 0 50px 100px -60px rgb(46 32 25 / 0.45), inset 0 0 0 1px rgb(203 184 166 / 0.4);
+    display: grid; gap: 2rem;
+    min-height: 560px;
+    grid-template-rows: auto 1fr auto;
+  }
+  .wizard__progress { display: flex; gap: 0.5rem; }
+  .wizard__dot { flex: 1; height: 2px; background: var(--line); border-radius: 2px; position: relative; overflow: hidden; }
+  .wizard__dot::after { content: ''; position: absolute; inset: 0; background: var(--espresso); transform: scaleX(0); transform-origin: left; transition: transform 0.6s var(--ease-silk); }
+  .wizard__dot.is-done::after { transform: scaleX(1); }
+
+  .wizard__step { border: 0; padding: 0; display: grid; gap: 1.6rem; align-content: start; min-width: 0; }
+  .wizard__legend { display: grid; gap: 0.6rem; font-family: var(--font-display); font-size: var(--fs-2xl); line-height: 1.05; padding: 0; margin-bottom: 0.4rem; }
+  .wizard__legend .caps { font-family: var(--font-sans); color: var(--mocha); }
+  .wizard__group { display: grid; gap: 0.8rem; }
+  .wizard__group[hidden] { display: none; }
+  .wizard__label { font-size: var(--fs-xs); letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-soft); }
+  .wizard__label small { text-transform: none; letter-spacing: 0; }
+  .wizard__options { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .wizard__options--services { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+
+  .opt { position: relative; cursor: pointer; }
+  .opt input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .opt__box {
+    display: flex; align-items: center; gap: 0.8rem;
+    padding: 1rem 1.1rem; border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--line);
+    font-size: var(--fs-sm);
+    transition: background-color 0.35s, box-shadow 0.35s, color 0.35s;
+    height: 100%;
+  }
+  .opt__box :global(svg) { color: var(--cocoa); flex: none; }
+  .opt:hover .opt__box { box-shadow: inset 0 0 0 1px var(--taupe); }
+  .opt input:checked + .opt__box { background: var(--espresso); color: var(--ivory); box-shadow: none; }
+  .opt input:checked + .opt__box :global(svg) { color: var(--gold-1); }
+  .opt input:focus-visible + .opt__box { outline: 1.5px solid var(--gold-3); outline-offset: 3px; }
+  .opt--chip .opt__box { padding: 0.65rem 1.1rem; border-radius: 999px; }
+
+  .field { display: grid; gap: 0.6rem; }
+  .field__input {
+    width: 100%;
+    padding: 0.9rem 0; background: transparent; border: 0; border-bottom: 1px solid var(--taupe);
+    font-family: var(--font-display); font-size: var(--fs-xl); color: var(--espresso);
+    resize: vertical;
+    border-radius: 0;
+  }
+  .field__input:focus { outline: none; border-color: var(--espresso); }
+  .field__input::placeholder { color: color-mix(in oklab, var(--mocha) 60%, transparent); }
+  .field__error { color: #a24a3c; font-size: var(--fs-sm); }
+
+  .wizard__deposit { display: flex; gap: 0.6rem; align-items: center; padding: 1rem 1.2rem; border-radius: var(--radius-sm); background: var(--sand); font-size: var(--fs-sm); color: var(--cocoa); }
+  .wizard__deposit[hidden] { display: none; }
+  .wizard__preview { padding: 1.2rem 1.4rem; border-radius: var(--radius-sm); background: var(--sand); display: grid; gap: 0.5rem; }
+  .wizard__preview .caps { color: var(--mocha); }
+  .wizard__message { white-space: pre-line; font-size: var(--fs-sm); }
+
+  .wizard__nav { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .wizard__nav [data-next] { margin-left: auto; }
+  .wizard__back { font-size: var(--fs-sm); color: var(--fg-soft); }
+  .wizard__send { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-left: auto; }
+  .wizard__send[hidden] { display: none; }
+
+  /* Sin JS: todos los pasos visibles */
+  :global(html:not(.has-js)) .wizard__step[hidden] { display: grid; }
+  :global(html:not(.has-js)) .wizard__nav [data-next],
+  :global(html:not(.has-js)) .wizard__progress { display: none; }
+  :global(html:not(.has-js)) .wizard__send[hidden] { display: flex; }
+
+  @media (max-width: 960px) {
+    .booking__grid { grid-template-columns: 1fr; }
+    .booking__intro { position: static; }
+  }
+</style>

@@ -1,0 +1,43 @@
+---
+import Swoosh from './Swoosh.astro';
+interface Props { id?: string; class?: string; swoosh?: boolean; tagline?: boolean; draw?: boolean }
+const { id = 'logo', class: cls = '', swoosh = true, tagline = true, draw = false } = Astro.props;
+---
+<span class:list={['logo', cls]} data-logo>
+  {swoosh && <Swoosh id={`${id}-sw`} class="logo__swoosh" draw={draw} />}
+  <span class="logo__word" data-logo-word>Mechón <span class="logo__de">de</span> Pelo</span>
+  {tagline && <span class="logo__tag" data-logo-tag>Hair Studio</span>}
+</span>
+<style>
+  .logo {
+    --logo-size: 1rem;
+    position: relative;
+    display: inline-grid;
+    justify-items: center;
+    font-size: var(--logo-size);
+    color: var(--espresso);
+    line-height: 1;
+  }
+  .logo :global(.logo__swoosh) {
+    width: 72%;
+    margin-bottom: -0.55em;
+    margin-left: 6%;
+  }
+  .logo__word {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 2.6em;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+  .logo__de { font-size: 0.56em; font-weight: 500; letter-spacing: 0; }
+  .logo__tag {
+    margin-top: 0.75em;
+    font-family: var(--font-sans);
+    font-size: 0.62em;
+    font-weight: 400;
+    letter-spacing: 0.62em;
+    margin-right: -0.62em;
+    text-transform: uppercase;
+  }
+</style>

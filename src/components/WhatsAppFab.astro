@@ -1,0 +1,26 @@
+---
+import Icon from './Icon.astro';
+import { getContent } from '../lib/content';
+import { whatsappUrl, defaultBookingMessage } from '../lib/links';
+const { settings } = await getContent();
+---
+<a class="fab" href={whatsappUrl(settings, defaultBookingMessage)} target="_blank" rel="noopener" data-fab data-book-link aria-label="Escribinos por WhatsApp">
+  <Icon name="whatsapp" size={26} strokeWidth={1.4} />
+  <span class="fab__label">Turnos</span>
+</a>
+<style>
+  .fab {
+    position: fixed; right: clamp(1rem, 2vw, 2rem); bottom: clamp(1rem, 2vw, 2rem); z-index: 40;
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    height: 58px; padding: 0 1.3rem 0 1.1rem;
+    border-radius: 999px;
+    background: var(--espresso); color: var(--ivory);
+    box-shadow: 0 18px 40px -16px rgb(28 20 16 / 0.55);
+    transform: translateY(160%);
+    transition: transform 0.8s var(--ease-silk), background-color 0.4s;
+  }
+  .fab:hover { background: var(--cocoa); }
+  :global(.fab.is-visible) { transform: none; }
+  .fab__label { font-size: var(--fs-xs); letter-spacing: 0.24em; text-transform: uppercase; }
+  :global(html:not(.has-js)) .fab { transform: none; }
+</style>

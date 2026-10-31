@@ -1,0 +1,319 @@
+/* ==========================================================================
+   Mechón de Pelo — sistema de diseño
+   ========================================================================== */
+
+:root {
+  /* Paleta (muestreada de la marca; ajustar con el logo vectorial) */
+  --ivory: #f7f2ec;
+  --cream: #fbf8f4;
+  --sand: #ede3d8;
+  --taupe: #cbb8a6;
+  --mocha: #8a6f5c;
+  --espresso: #2e2019;
+  --ink: #1c1410;
+  --ink-2: #261b16;
+  --cocoa: #8b5a3c;
+  --gold-1: #ead7ae;
+  --gold-2: #c9a25f;
+  --gold-3: #93703f;
+  --gold: linear-gradient(100deg, var(--gold-3) 0%, var(--gold-2) 35%, var(--gold-1) 55%, var(--gold-2) 75%, var(--gold-3) 100%);
+
+  --bg: var(--ivory);
+  --fg: var(--espresso);
+  --fg-soft: color-mix(in oklab, var(--espresso) 72%, var(--ivory));
+  --line: color-mix(in oklab, var(--taupe) 70%, transparent);
+
+  /* Tipografía */
+  --font-display: 'Cormorant Garamond', 'Cormorant', 'Times New Roman', serif;
+  --font-sans: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+  --font-script: 'Allura', cursive;
+
+  --fs-xs: clamp(0.72rem, 0.7rem + 0.1vw, 0.8rem);
+  --fs-sm: clamp(0.86rem, 0.82rem + 0.15vw, 0.95rem);
+  --fs-base: clamp(1rem, 0.96rem + 0.2vw, 1.1rem);
+  --fs-lg: clamp(1.2rem, 1.1rem + 0.45vw, 1.45rem);
+  --fs-xl: clamp(1.6rem, 1.35rem + 1vw, 2.3rem);
+  --fs-2xl: clamp(2.2rem, 1.7rem + 2.2vw, 3.6rem);
+  --fs-3xl: clamp(2.8rem, 2rem + 4vw, 5.6rem);
+  --fs-hero: clamp(3.4rem, 1.6rem + 7.4vw, 9.6rem);
+  --fs-mega: clamp(4rem, 1rem + 13vw, 17rem);
+
+  /* Espaciado y layout */
+  --gutter: clamp(1.25rem, 0.8rem + 2.4vw, 3.5rem);
+  --section: clamp(6rem, 4rem + 9vw, 13rem);
+  --max: 1440px;
+  --radius: 28px;
+  --radius-sm: 16px;
+  --header-h: 84px;
+
+  --ease-silk: cubic-bezier(0.65, 0.05, 0.15, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: light;
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: clip; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  font-weight: 300;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+img, svg, video, canvas { display: block; max-width: 100%; }
+img { height: auto; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+a { color: inherit; text-decoration: none; }
+ul[role='list'], ol[role='list'] { list-style: none; padding: 0; }
+::selection { background: var(--gold-2); color: var(--ink); }
+
+:focus-visible {
+  outline: 1.5px solid var(--gold-3);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+@view-transition { navigation: auto; }
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: 0.6s; animation-timing-function: var(--ease-silk); }
+
+/* ---------- Utilidades ---------- */
+.container { width: min(100% - 2 * var(--gutter), var(--max)); margin-inline: auto; }
+.visually-hidden {
+  position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: fixed; top: 1rem; left: 1rem; z-index: 1000; padding: 0.75rem 1.25rem;
+  background: var(--espresso); color: var(--ivory); border-radius: 999px;
+  transform: translateY(-200%); transition: transform 0.3s var(--ease-out);
+}
+.skip-link:focus { transform: none; }
+
+/* ---------- Tipografía ---------- */
+.display, h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+}
+h1 em, h2 em, h3 em, .display em { font-style: italic; font-weight: 300; }
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--mocha);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9em;
+}
+.eyebrow::before {
+  content: '';
+  width: 2.4em; height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+.script { font-family: var(--font-script); font-weight: 400; letter-spacing: 0; line-height: 1; }
+.caps { text-transform: uppercase; letter-spacing: 0.32em; font-size: var(--fs-xs); font-weight: 400; }
+.lead { font-size: var(--fs-lg); line-height: 1.55; color: var(--fg-soft); max-width: 36ch; font-weight: 300; }
+.gold-text {
+  background: var(--gold);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Máscaras para reveals de SplitText */
+.split-line { overflow: clip; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.split-line > * { display: inline-block; }
+
+/* ---------- Botones ---------- */
+.btn {
+  --btn-bg: var(--espresso);
+  --btn-fg: var(--ivory);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85em;
+  padding: 1.05em 1.7em;
+  border-radius: 999px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-size: var(--fs-xs);
+  font-weight: 400;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  overflow: hidden;
+  isolation: isolate;
+  white-space: nowrap;
+  transition: color 0.5s var(--ease-out);
+}
+.btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--gold);
+  background-size: 200% 100%;
+  border-radius: inherit;
+  transform: translateY(101%);
+  transition: transform 0.6s var(--ease-silk);
+  z-index: -1;
+}
+.btn:hover::before, .btn:focus-visible::before { transform: translateY(0); }
+.btn:hover, .btn:focus-visible { color: var(--ink); }
+.btn .btn__icon { width: 1.25em; height: 1.25em; flex: none; }
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--espresso);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.btn--light { --btn-bg: var(--ivory); --btn-fg: var(--ink); }
+.btn--ghost-light { --btn-bg: transparent; --btn-fg: var(--ivory); box-shadow: inset 0 0 0 1px rgb(247 242 236 / 0.3); }
+
+.link-underline {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size 0.5s var(--ease-silk);
+  padding-bottom: 2px;
+}
+.link-underline:hover, .link-underline:focus-visible { background-size: 100% 1px; }
+
+/* ---------- Secciones ---------- */
+.section { position: relative; padding-block: var(--section); }
+.section--dark {
+  --bg: var(--ink);
+  --fg: var(--ivory);
+  --fg-soft: color-mix(in oklab, var(--ivory) 70%, var(--ink));
+  --line: rgb(247 242 236 / 0.14);
+  color: var(--fg);
+}
+.section--dark .eyebrow { color: var(--gold-2); }
+
+.section-head {
+  display: grid;
+  gap: 1.6rem;
+  margin-bottom: clamp(3rem, 2rem + 4vw, 6rem);
+}
+.section-head h2 { font-size: var(--fs-3xl); }
+
+.chip {
+  display: inline-flex; align-items: center;
+  padding: 0.55em 1.1em;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+  white-space: nowrap;
+}
+
+/* ---------- Capa WebGL y grain ---------- */
+.gl-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s var(--ease-out);
+}
+.gl-stage.is-ready { opacity: 1; }
+.gl-stage canvas { width: 100% !important; height: 100% !important; }
+.page { position: relative; z-index: 1; }
+
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.18 0 0 0 0 0.12 0 0 0 0 0.09 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1.2s steps(6) infinite;
+}
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -3%); }
+  60% { transform: translate(-2%, -1%); }
+  80% { transform: translate(3%, 3%); }
+}
+
+/* ---------- Cursor ---------- */
+.cursor { position: fixed; top: 0; left: 0; z-index: 90; pointer-events: none; display: none; opacity: 0; visibility: hidden; }
+@media (pointer: fine) { .has-js .cursor { display: block; } }
+.cursor__dot, .cursor__ring {
+  position: absolute; top: 0; left: 0;
+  border-radius: 50%;
+  translate: -50% -50%;
+}
+.cursor__dot { width: 6px; height: 6px; background: var(--gold-3); }
+.cursor__ring {
+  width: 38px; height: 38px;
+  border: 1px solid color-mix(in oklab, var(--gold-3) 60%, transparent);
+  display: grid; place-items: center;
+  transition: width 0.45s var(--ease-out), height 0.45s var(--ease-out), background-color 0.45s, border-color 0.45s;
+}
+.cursor__label {
+  font-size: 0.62rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--ink);
+  opacity: 0; transition: opacity 0.3s;
+}
+.cursor.is-view .cursor__ring { width: 92px; height: 92px; background: rgb(234 215 174 / 0.92); border-color: transparent; }
+.cursor.is-view .cursor__label { opacity: 1; }
+.cursor.is-link .cursor__ring { width: 60px; height: 60px; border-color: var(--gold-2); }
+.cursor.is-hidden { opacity: 0; }
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed; left: 50%; bottom: 2rem; z-index: 95;
+  translate: -50% 150%;
+  padding: 1rem 1.5rem;
+  background: var(--espresso); color: var(--ivory);
+  border-radius: 999px;
+  font-size: var(--fs-sm);
+  box-shadow: 0 20px 50px -20px rgb(28 20 16 / 0.6);
+  transition: translate 0.6s var(--ease-silk), visibility 0s 0.6s;
+  visibility: hidden;
+  max-width: calc(100% - 2rem);
+  text-align: center;
+}
+.toast.is-visible { translate: -50% 0; visibility: visible; transition: translate 0.6s var(--ease-silk); }
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .grain { animation: none; }
+}
+
+/* Estado inicial de elementos que anima JS (solo si JS está activo) */
+.has-js [data-reveal],
+.has-js [data-split],
+.has-js [data-hero-in],
+.has-js [data-hero-title],
+.has-js [data-scrub-words] { visibility: hidden; }
+.has-js.no-motion [data-reveal],
+.has-js.no-motion [data-split],
+.has-js.no-motion [data-hero-in],
+.has-js.no-motion [data-hero-title],
+.has-js.no-motion [data-scrub-words] { visibility: visible; }
+
+/* Con WebGL activo, el fondo oscuro lo pinta el body (así el mechón 3D se ve en esas secciones) */
+html.gl-on .shop, html.gl-on .footer { background: transparent; }
+html.gl-on .footer .footer__swoosh { opacity: 0; }
+body { transition: none; }

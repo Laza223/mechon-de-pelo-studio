@@ -1,0 +1,47 @@
+---
+import Icon from './Icon.astro';
+import { getContent } from '../lib/content';
+const { faqs } = await getContent();
+---
+<section class="faq section" id="preguntas" aria-labelledby="faq-title">
+  <div class="container faq__grid">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal="fade">Preguntas frecuentes</p>
+      <h2 id="faq-title" data-split="lines">Lo que <em>siempre</em> nos preguntan</h2>
+    </div>
+    <div class="faq__list">
+      {faqs.map((f) => (
+        <details class="qa" data-accordion data-reveal="up">
+          <summary class="qa__q">
+            <span>{f.question}</span>
+            <span class="qa__icon" aria-hidden="true"><Icon name="plus" size={20} /></span>
+          </summary>
+          <div class="qa__a"><p>{f.answer}</p></div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq__grid { display: grid; grid-template-columns: 5fr 7fr; gap: clamp(2rem, 5vw, 6rem); }
+  .faq__grid h2 { font-weight: 300; }
+  .qa { border-top: 1px solid var(--line); }
+  .qa:last-child { border-bottom: 1px solid var(--line); }
+  .qa__q {
+    list-style: none; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center; gap: 1.5rem;
+    padding: 1.6rem 0;
+    font-family: var(--font-display); font-size: var(--fs-xl); line-height: 1.15;
+  }
+  .qa__q::-webkit-details-marker { display: none; }
+  .qa__icon {
+    flex: none; width: 44px; height: 44px; border-radius: 50%;
+    display: grid; place-items: center; box-shadow: inset 0 0 0 1px var(--line);
+    transition: transform 0.6s var(--ease-silk), background-color 0.4s;
+  }
+  .qa[open] .qa__icon { transform: rotate(135deg); background: var(--espresso); color: var(--ivory); }
+  .qa__a { overflow: hidden; }
+  .qa__a p { padding-bottom: 1.8rem; color: var(--fg-soft); max-width: 60ch; }
+  @media (max-width: 900px) { .faq__grid { grid-template-columns: 1fr; } }
+</style>

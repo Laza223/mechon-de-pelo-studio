@@ -1,0 +1,32 @@
+---
+import { Picture } from 'astro:assets';
+import type { Img } from '../lib/types';
+interface Props { img: Img; class?: string; sizes?: string; loading?: 'lazy' | 'eager'; widths?: number[] }
+const { img, class: cls, sizes = '(min-width: 900px) 40vw, 90vw', loading = 'lazy', widths = [400, 640, 900] } = Astro.props;
+const isLocal = typeof img.src !== 'string';
+---
+{isLocal ? (
+  <Picture
+    src={img.src as ImageMetadata}
+    alt={img.alt}
+    formats={['avif', 'webp']}
+    widths={widths}
+    sizes={sizes}
+    loading={loading}
+    decoding="async"
+    class={cls}
+  />
+) : (
+  <img
+    src={img.src as string}
+    srcset={img.srcset}
+    sizes={sizes}
+    alt={img.alt}
+    width={img.width}
+    height={img.height}
+    loading={loading}
+    decoding="async"
+    class={cls}
+    style={img.lqip ? `background-image:url(${img.lqip});background-size:cover` : undefined}
+  />
+)}

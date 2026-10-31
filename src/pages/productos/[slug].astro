@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductVisual from '../../components/ProductVisual.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import Media from '../../components/Media.astro';
+import Icon from '../../components/Icon.astro';
+import { getContent } from '../../lib/content';
+import { ars, stockLabel } from '../../lib/format';
+import type { Product } from '../../lib/types';
+
+export async function getStaticPaths() {
+  const { products } = await getContent();
+  return products.map((p) => ({ params: { slug: p.slug }, props: { product: p } }));
+}
+interface Props { product: Product }
+const { product: p } = Astro.props;
+const { products, categories } = await getContent();
+const cat = categories.find((c) => c.slug === p.category);
+const related = products.filter((x) => x.id !== p.id && x.stock !== 'agotado' && x.category === p.category)
+  .concat(products.filter((x) => x.id !== p.id && x.stock !== 'agotado' && x.category !== p.category))
+  .slice(0, 4);
+const out = p.stock === 'agotado';
+const productLd = {
+  '@context': 'https://schema.org', '@type': 'Product', name: p.name, description: p.description,
+  brand: p.brand ? { '@type': 'Brand', name: p.brand } : undefined, category: cat?.title,
+};
+---
+<BaseLayout title={`${p.name}${p.brand ? ` · ${p.brand}` : ''} | Mechón de Pelo`} description={p.description} bodyClass="page-product">
+  <script type="application/ld+json" set:html={JSON.stringify(productLd)} />
+  <section class="pd section">
+    <div class="container pd__grid">
+      <div class="pd__visual" data-reveal="fade">
+        <div class="pd__stage">
+          {p.image ? <Media img={p.image} loading="eager" sizes="(min-width: 900px) 45vw, 90vw" /> : p.visual && <ProductVisual uid={`pd-${p.id}`} visual={p.visual} brand={p.brand} />}
+        </div>
+      </div>
+      <div class="pd__info">
+        <nav class="pd__crumbs caps" aria-label="Migas de pan">
+          <a class="link-underline" href="/productos">Productos</a> <span aria-hidden="true">/</span> {cat?.title}
+        </nav>
+        {p.brand && <p class="caps pd__brand">{p.brand}</p>}
+        <h1 class="pd__name" data-split="lines">{p.name}</h1>
+        <p class="lead">{p.description}</p>
+        <p class:list={['pd__stock', `is-${p.stock}`]}>{stockLabel[p.stock]}</p>
+
+        {p.benefits.length > 0 && (
+          <ul role="list" class="pd__benefits">
+            {p.benefits.map((b) => <li><Icon name="check" size={18} /> {b}</li>)}
+          </ul>
+        )}
+        {p.howToUse && (
+          <div class="pd__how">
+            <p class="caps">Modo de uso</p>
+            <p>{p.howToUse}</p>
+          </div>
+        )}
+
+        <div class="pd__buy">
+          <span class="pd__price">{p.showPrice && p.price ? ars(p.price) : 'Consultá el precio'}</span>
+          <button type="button" class="btn" data-bag-add={p.id} disabled={out} data-magnetic>
+            <Icon name="plus" class="btn__icon" /> {out ? 'Agotado' : 'Sumar a mi consulta'}
+          </button>
+        </div>
+        <p class="pd__note"><Icon name="whatsapp" size={18} /> Coordinamos pago, retiro o entrega por WhatsApp.</p>
+      </div>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="section pd-related">
+      <div class="container">
+        <div class="section-head"><p class="eyebrow">También te puede gustar</p></div>
+        <div class="pd-related__grid">{related.map((r) => <ProductCard product={r} />)}</div>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .pd { padding-top: calc(var(--header-h) + 3rem); }
+  .pd__grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 6vw, 7rem); align-items: center; }
+  .pd__visual {
+    aspect-ratio: 4 / 5; border-radius: clamp(28px, 4vw, 48px);
+    background: radial-gradient(120% 80% at 30% 15%, #fffaf3 0%, transparent 55%), linear-gradient(160deg, #f1e8de 0%, #e4d6c8 100%);
+    display: grid; place-items: center; position: sticky; top: calc(var(--header-h) + 2rem);
+  }
+  .pd__stage { width: 64%; aspect-ratio: 3 / 4; }
+  .pd__stage :global(img) { width: 100%; height: 100%; object-fit: contain; }
+  .pd__info { display: grid; gap: 1.4rem; align-content: start; }
+  .pd__crumbs { color: var(--mocha); display: flex; gap: 0.6rem; }
+  .pd__brand { color: var(--mocha); }
+  .pd__name { font-size: var(--fs-3xl); font-weight: 300; }
+  .pd__stock { display: inline-flex; align-items: center; gap: 0.6rem; font-size: var(--fs-xs); letter-spacing: 0.16em; text-transform: uppercase; }
+  .pd__stock::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #6d8b5a; }
+  .pd__stock.is-consultar::before { background: var(--gold-2); }
+  .pd__stock.is-agotado::before { background: #a24a3c; }
+  .pd__benefits { display: grid; gap: 0.6rem; padding-block: 1.4rem; border-block: 1px solid var(--line); }
+  .pd__benefits li { display: flex; gap: 0.7rem; align-items: center; }
+  .pd__benefits :global(svg) { color: var(--gold-3); }
+  .pd__how { display: grid; gap: 0.4rem; color: var(--fg-soft); }
+  .pd__how .caps { color: var(--mocha); }
+  .pd__buy { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-top: 1rem; }
+  .pd__price { font-family: var(--font-display); font-size: var(--fs-xl); }
+  .pd__note { display: flex; gap: 0.6rem; align-items: center; font-size: var(--fs-sm); color: var(--fg-soft); }
+  .pd-related__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+  @media (max-width: 900px) {
+    .pd__grid { grid-template-columns: 1fr; }
+    .pd__visual { position: static; }
+    .pd-related__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>

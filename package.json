@@ -1,0 +1,37 @@
+{
+  "name": "mechon-de-pelo",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "seed:sanity": "node --env-file=.env scripts/seed-sanity.mjs"
+  },
+  "dependencies": {
+    "@astrojs/react": "^7.1.2",
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource/allura": "^5.3.0",
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "@fontsource/jost": "^5.3.0",
+    "@sanity/astro": "^3.6.0",
+    "@sanity/client": "^8.14.1",
+    "@sanity/image-url": "^2.1.1",
+    "@sanity/locale-es-es": "^1.2.39",
+    "astro": "^7.4.4",
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.27",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "sanity": "^6.21.0",
+    "styled-components": "^6.6.0",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@types/three": "^0.187.0",
+    "typescript": "^6.0.3"
+  }
+}

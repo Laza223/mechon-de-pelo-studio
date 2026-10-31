@@ -1,0 +1,73 @@
+---
+import Icon from './Icon.astro';
+---
+<div class="bag" data-bag hidden>
+  <div class="bag__scrim" data-bag-close></div>
+  <aside class="bag__panel" role="dialog" aria-modal="true" aria-labelledby="bag-title" tabindex="-1">
+    <header class="bag__head">
+      <div>
+        <p class="eyebrow">Tratamientos en casa</p>
+        <h2 id="bag-title">Mi consulta</h2>
+      </div>
+      <button class="bag__close" type="button" data-bag-close aria-label="Cerrar"><Icon name="close" /></button>
+    </header>
+
+    <ul class="bag__list" role="list" data-bag-list></ul>
+
+    <div class="bag__empty" data-bag-empty>
+      <p>Todavía no sumaste productos.</p>
+      <a class="link-underline" href="/productos" data-bag-close>Ver productos</a>
+    </div>
+
+    <footer class="bag__foot" data-bag-foot>
+      <p class="bag__note">
+        <Icon name="info" size={18} />
+        Te confirmamos stock, precio y forma de entrega por WhatsApp. Los productos están sujetos a disponibilidad.
+      </p>
+      <button class="btn bag__send" type="button" data-bag-send>
+        <Icon name="whatsapp" class="btn__icon" /> Enviar consulta
+      </button>
+      <button class="bag__clear link-underline" type="button" data-bag-clear>Vaciar</button>
+    </footer>
+  </aside>
+</div>
+
+<style>
+  .bag { position: fixed; inset: 0; z-index: 80; }
+  .bag[hidden] { display: none; }
+  .bag__scrim { position: absolute; inset: 0; background: rgb(28 20 16 / 0.4); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.5s; }
+  .bag__panel {
+    position: absolute; top: 0; right: 0; bottom: 0;
+    width: min(460px, 100%);
+    background: var(--cream);
+    color: var(--espresso);
+    display: grid; grid-template-rows: auto 1fr auto;
+    padding: 2rem clamp(1.25rem, 3vw, 2.25rem);
+    transform: translateX(100%);
+    transition: transform 0.7s var(--ease-silk);
+    box-shadow: -30px 0 80px -40px rgb(28 20 16 / 0.5);
+  }
+  :global(.bag.is-open) .bag__scrim { opacity: 1; }
+  :global(.bag.is-open) .bag__panel { transform: none; }
+  .bag__head { display: flex; justify-content: space-between; align-items: start; padding-bottom: 1.5rem; border-bottom: 1px solid var(--line); }
+  .bag__head h2 { font-size: var(--fs-2xl); margin-top: 0.6rem; }
+  .bag__close { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--line); }
+  .bag__list { overflow-y: auto; padding-block: 1rem; display: grid; align-content: start; gap: 0.25rem; }
+  .bag__empty { display: grid; gap: 0.75rem; justify-items: start; align-self: start; padding-top: 2rem; color: var(--fg-soft); }
+  .bag__foot { display: grid; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+  .bag__note { display: flex; gap: 0.6rem; font-size: var(--fs-sm); color: var(--fg-soft); }
+  .bag__note :global(svg) { flex: none; margin-top: 0.2em; }
+  .bag__send { justify-content: center; }
+  .bag__clear { justify-self: center; font-size: var(--fs-sm); color: var(--fg-soft); }
+
+  :global(.bag-item) {
+    display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center;
+    padding: 1rem 0; border-bottom: 1px solid var(--line);
+  }
+  :global(.bag-item__name) { font-family: var(--font-display); font-size: var(--fs-lg); line-height: 1.15; }
+  :global(.bag-item__brand) { font-size: var(--fs-xs); letter-spacing: 0.2em; text-transform: uppercase; color: var(--mocha); }
+  :global(.bag-item__qty) { display: inline-flex; align-items: center; gap: 0.25rem; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); padding: 0.2rem; }
+  :global(.bag-item__qty button) { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; }
+  :global(.bag-item__qty button:hover) { background: var(--sand); }
+  :global(.bag-item__qty output) { min-width: 1.5rem; text-align: center; font-size: var(--fs-sm); }
+</style>

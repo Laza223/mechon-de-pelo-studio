@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Swoosh from '../components/Swoosh.astro';
+---
+<BaseLayout title="Página no encontrada | Mechón de Pelo">
+  <section class="nf">
+    <Swoosh id="nf" class="nf__swoosh" draw />
+    <p class="eyebrow">Error 404</p>
+    <h1 class="nf__title">Este mechón <em>se nos escapó</em></h1>
+    <p class="lead">La página que buscás no existe o cambió de lugar.</p>
+    <a class="btn" href="/" data-magnetic>Volver al inicio</a>
+  </section>
+</BaseLayout>
+<style>
+  .nf { min-height: 100svh; display: grid; place-content: center; justify-items: center; text-align: center; gap: 1.6rem; padding: calc(var(--header-h) + 2rem) var(--gutter) 4rem; }
+  .nf :global(.nf__swoosh) { width: min(70vw, 520px); }
+  .nf__title { font-size: var(--fs-3xl); font-weight: 300; }
+</style>

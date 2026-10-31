@@ -1,0 +1,47 @@
+---
+/**
+ * El trazo dorado del logo: un mechón en forma de onda.
+ * Recreación provisoria hasta tener el vector oficial.
+ * #swoosh-center lo usa WebGL para que las hebras 3D nazcan exactamente de este trazo.
+ */
+interface Props { id?: string; class?: string; strands?: boolean; draw?: boolean }
+const { id = 'sw', class: cls = '', strands = true, draw = false } = Astro.props;
+const CENTER = 'M8 96 C70 41 112 8 170 13 C222 17 238 54 292 52 C336 49 368 31 396 20';
+const strandPaths = [
+  { d: 'M14 100 C72 50 116 18 172 22 C224 26 240 62 294 60 C338 57 370 39 398 28', w: 0.9, o: 0.75 },
+  { d: 'M4 90 C66 34 110 1 168 5 C220 9 236 46 290 44 C334 41 366 24 394 13', w: 0.7, o: 0.6 },
+  { d: 'M20 104 C78 60 120 26 176 30 C226 34 244 70 298 67 C340 64 372 46 398 36', w: 0.5, o: 0.45 },
+  { d: 'M30 86 C80 40 118 14 168 17 C214 21 232 50 280 49 C318 47 350 34 372 27', w: 0.45, o: 0.5 },
+];
+---
+<svg class:list={['swoosh', cls]} viewBox="0 0 400 110" fill="none" aria-hidden="true" data-swoosh={draw ? '' : undefined}>
+  <defs>
+    <linearGradient id={`${id}-g`} x1="0" y1="0" x2="400" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#93703F" stop-opacity="0" />
+      <stop offset="0.12" stop-color="#93703F" />
+      <stop offset="0.38" stop-color="#EAD7AE" />
+      <stop offset="0.62" stop-color="#C9A25F" />
+      <stop offset="0.86" stop-color="#E6CFA0" />
+      <stop offset="1" stop-color="#C9A25F" stop-opacity="0" />
+    </linearGradient>
+    <mask id={`${id}-m`} maskUnits="userSpaceOnUse" x="-10" y="-10" width="420" height="130">
+      <path class="swoosh__mask" d={CENTER} stroke="#fff" stroke-width="16" stroke-linecap="round" />
+    </mask>
+  </defs>
+  <path id={`${id}-center`} class="swoosh__center" d={CENTER} stroke="none" />
+  <g mask={`url(#${id}-m)`}>
+    <path
+      class="swoosh__body"
+      fill={`url(#${id}-g)`}
+      d="M8 96 C70 38 112 4 170 9 C222 13 240 51 292 48 C336 45 368 29 396 20 C368 33 336 53 292 56 C236 59 222 21 170 17 C114 13 72 44 8 96 Z"
+    />
+  </g>
+  {strands && (
+    <g class="swoosh__strands" stroke={`url(#${id}-g)`} stroke-linecap="round">
+      {strandPaths.map((s) => <path d={s.d} stroke-width={s.w} opacity={s.o} />)}
+    </g>
+  )}
+</svg>
+<style>
+  .swoosh { width: 100%; height: auto; overflow: visible; }
+</style>

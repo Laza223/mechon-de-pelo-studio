@@ -1,0 +1,110 @@
+---
+import Icon from './Icon.astro';
+import Swoosh from './Swoosh.astro';
+import { getContent } from '../lib/content';
+import { whatsappUrl, defaultBookingMessage } from '../lib/links';
+const { settings } = await getContent();
+---
+<section class="hero" data-hero aria-labelledby="hero-title">
+  <div class="hero__fallback" aria-hidden="true"><Swoosh id="hero-fb" /></div>
+
+  <div class="container hero__grid">
+    <p class="hero__eyebrow eyebrow" data-hero-in>Hair Studio · Luján</p>
+
+    <h1 id="hero-title" class="hero__title" data-hero-title>
+      <span class="hero__line">Tu pelo,</span>
+      <span class="hero__line"><em>en su mejor</em></span>
+      <span class="hero__line hero__line--indent">versión<span class="hero__dot">.</span></span>
+    </h1>
+
+    <div class="hero__aside" data-hero-in>
+      <p class="lead">
+        Peinados para tus eventos, tratamientos que cuidan y trenzas africanas hechas con paciencia.
+        Un estudio boutique, con turno previo.
+      </p>
+      <div class="hero__ctas">
+        <a class="btn" href={whatsappUrl(settings, defaultBookingMessage)} target="_blank" rel="noopener" data-magnetic data-book-link>
+          <Icon name="whatsapp" class="btn__icon" /> Reservá tu turno
+        </a>
+        <a class="btn btn--ghost" href="#servicios" data-magnetic>Ver servicios</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container hero__bottom" data-hero-in>
+    <ul role="list" class="hero__tags">
+      <li>Peinados</li><li>Tratamientos</li><li>Trenzas africanas</li><li>Productos</li>
+    </ul>
+    <a href="#manifiesto" class="hero__scroll" aria-label="Bajar">
+      <span class="caps">Scroll</span>
+      <span class="hero__scroll-line" aria-hidden="true"></span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    padding-top: calc(var(--header-h) + 2rem);
+    overflow: clip;
+  }
+  .hero__fallback {
+    position: absolute; inset: 18% -5% auto 30%;
+    opacity: 0.9;
+    pointer-events: none;
+  }
+  :global(html.gl-on) .hero__fallback { opacity: 0; transition: opacity 1s; }
+
+  .hero__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    align-content: end;
+    row-gap: 2.2rem;
+    padding-bottom: clamp(2rem, 5vh, 4rem);
+  }
+  .hero__eyebrow { grid-column: 1 / -1; }
+  .hero__title {
+    grid-column: 1 / span 9;
+    font-size: var(--fs-hero);
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: -0.035em;
+  }
+  .hero__line { display: block; }
+  .hero__line--indent { padding-left: 1.4em; }
+  .hero__title em { font-weight: 300; }
+  .hero__dot { color: var(--gold-2); }
+  .hero__aside {
+    grid-column: 9 / -1;
+    align-self: end;
+    display: grid; gap: 2rem;
+  }
+  .hero__ctas { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+
+  .hero__bottom {
+    display: flex; justify-content: space-between; align-items: end;
+    padding-block: 1.5rem 2rem;
+    border-top: 1px solid var(--line);
+  }
+  .hero__tags { display: flex; flex-wrap: wrap; gap: 0.4rem 2rem; font-size: var(--fs-xs); letter-spacing: 0.24em; text-transform: uppercase; color: var(--fg-soft); }
+  .hero__tags li { display: inline-flex; align-items: center; gap: 0.8rem; }
+  .hero__tags li + li::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--gold-2); margin-right: 1.2rem; }
+  .hero__scroll { display: inline-flex; align-items: center; gap: 1rem; color: var(--fg-soft); }
+  .hero__scroll-line { position: relative; width: 1px; height: 54px; background: var(--line); overflow: hidden; }
+  .hero__scroll-line::after {
+    content: ''; position: absolute; inset: 0; background: var(--espresso);
+    animation: scrollLine 2.2s var(--ease-silk) infinite;
+  }
+  @keyframes scrollLine { 0% { transform: translateY(-100%); } 60%, 100% { transform: translateY(100%); } }
+
+  @media (max-width: 960px) {
+    .hero__title { grid-column: 1 / -1; }
+    .hero__aside { grid-column: 1 / -1; }
+    .hero__fallback { inset: 12% -20% auto 10%; }
+    .hero__tags li:nth-child(n + 4) { display: none; }
+  }
+</style>

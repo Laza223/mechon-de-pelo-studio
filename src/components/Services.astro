@@ -1,0 +1,156 @@
+---
+import Icon from './Icon.astro';
+import { getContent } from '../lib/content';
+import { priceLabel } from '../lib/format';
+import { whatsappUrl } from '../lib/links';
+const { services, settings } = await getContent();
+const peinados = services.find((s) => s.category === 'peinados');
+const tratamientos = services.filter((s) => s.category === 'tratamientos');
+const trenzas = services.find((s) => s.category === 'trenzas');
+const pp = peinados ? priceLabel(peinados.priceType, peinados.price) : null;
+const tp = trenzas ? priceLabel(trenzas.priceType, trenzas.price) : null;
+const trenzasMsg = 'Hola Mechón de Pelo 🤎 Quería consultar por un turno para trenzas africanas.';
+---
+<section class="services" id="servicios" aria-labelledby="services-title" data-services>
+  <div class="container services__intro section">
+    <p class="eyebrow" data-reveal="fade">Nuestros servicios</p>
+    <h2 id="services-title" class="services__title" data-split="lines">
+      Tres formas de <em>cuidarte</em>,<br /> una misma dedicación.
+    </h2>
+  </div>
+
+  <div class="services__stage" data-services-stage>
+    <div class="container services__frame">
+      <div class="services__progress" aria-hidden="true">
+        <span class="services__count"><span data-services-count>01</span> / 03</span>
+        <span class="services__bar"><i data-services-bar></i></span>
+      </div>
+
+      <div class="services__chapters">
+        {peinados && (
+          <article class="chapter" data-chapter="updo" aria-labelledby="ch-1">
+            <p class="chapter__num caps">01 — Peinados</p>
+            <h3 id="ch-1" class="chapter__title">Peinados para tu <em>noche especial</em></h3>
+            <p class="chapter__desc">{peinados.description}</p>
+            <ul role="list" class="chapter__chips">
+              {peinados.occasions?.map((o) => <li class="chip">{o}</li>)}
+            </ul>
+            {pp && (
+              <p class="price"><span class="price__prefix caps">{pp.prefix}</span><span class="price__value">{pp.value}</span></p>
+            )}
+          </article>
+        )}
+
+        <article class="chapter" data-chapter="straight" aria-labelledby="ch-2">
+          <p class="chapter__num caps">02 — Tratamientos</p>
+          <h3 id="ch-2" class="chapter__title">Tratamientos que <em>se notan</em></h3>
+          <ul role="list" class="treatments">
+            {tratamientos.map((t) => {
+              const p = priceLabel(t.priceType, t.price);
+              return (
+                <li class="treatment">
+                  <span class="treatment__icon"><Icon name={t.icon} size={22} /></span>
+                  <span class="treatment__body">
+                    <span class="treatment__name">{t.title}</span>
+                    <span class="treatment__desc">{t.description}</span>
+                  </span>
+                  <span class="treatment__price">
+                    {p.prefix && <span class="caps">{p.prefix}</span>}
+                    <span class:list={['treatment__value', { 'is-ask': t.priceType === 'consultar' }]}>{p.value}</span>
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </article>
+
+        {trenzas && (
+          <article class="chapter" data-chapter="braid" aria-labelledby="ch-3">
+            <p class="chapter__num caps">03 — Trenzas africanas</p>
+            <h3 id="ch-3" class="chapter__title">Trenzas con <em>estilo y duración</em></h3>
+            <p class="chapter__desc">{trenzas.description}</p>
+            {tp && (
+              <p class="price"><span class="price__prefix caps">{tp.prefix}</span><span class="price__value">{tp.value}</span></p>
+            )}
+            {trenzas.requiresDeposit && (
+              <p class="chapter__note"><Icon name="sena" size={22} /> Para reservar se solicita una seña.</p>
+            )}
+            <a class="btn" href={whatsappUrl(settings, trenzasMsg)} target="_blank" rel="noopener" data-magnetic data-book-link data-book-message={trenzasMsg}>
+              <Icon name="whatsapp" class="btn__icon" /> Consultar disponibilidad
+            </a>
+          </article>
+        )}
+      </div>
+    </div>
+    <p class="container services__foot">
+      <Icon name="info" size={16} /> En los servicios “desde”, el valor final puede variar según largo, cantidad de cabello y dificultad del trabajo.
+    </p>
+  </div>
+</section>
+
+<style>
+  .services__intro { padding-bottom: clamp(2rem, 4vw, 4rem); display: grid; gap: 1.6rem; }
+  .services__title { font-size: var(--fs-3xl); font-weight: 300; max-width: 16ch; }
+
+  .services__stage { position: relative; }
+  .services__frame {
+    position: relative;
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 2rem;
+  }
+  .services__progress {
+    position: absolute; right: 0; top: 0;
+    display: flex; align-items: center; gap: 1rem;
+    font-size: var(--fs-xs); letter-spacing: 0.2em; color: var(--fg-soft);
+    z-index: 2;
+  }
+  .services__bar { position: relative; width: 120px; height: 1px; background: var(--line); overflow: hidden; }
+  .services__bar i { position: absolute; inset: 0; background: var(--espresso); transform-origin: left; transform: scaleX(0.333); }
+
+  .services__chapters { display: grid; gap: var(--section); padding-bottom: var(--section); }
+
+  .chapter { display: grid; gap: 1.6rem; align-content: start; max-width: 520px; }
+  .chapter__num { color: var(--mocha); }
+  .chapter__title { font-size: var(--fs-2xl); font-weight: 300; }
+  .chapter__desc { color: var(--fg-soft); max-width: 44ch; }
+  .chapter__chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .chapter__note { display: inline-flex; align-items: center; gap: 0.7rem; color: var(--cocoa); font-size: var(--fs-sm); }
+  .chapter .btn { justify-self: start; }
+
+  .price { display: grid; gap: 0.2rem; padding-top: 1.2rem; border-top: 1px solid var(--line); }
+  .price__prefix { color: var(--mocha); }
+  .price__value { font-family: var(--font-display); font-size: var(--fs-3xl); line-height: 1; font-weight: 400; }
+
+  .treatments { display: grid; }
+  .treatment {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 1.2rem; align-items: center;
+    padding: 1.15rem 0; border-top: 1px solid var(--line);
+  }
+  .treatment:last-child { border-bottom: 1px solid var(--line); }
+  .treatment__icon { width: 46px; height: 46px; border-radius: 50%; background: var(--sand); color: var(--cocoa); display: grid; place-items: center; }
+  .treatment__body { display: grid; gap: 0.15rem; }
+  .treatment__name { font-family: var(--font-display); font-size: var(--fs-lg); line-height: 1.1; }
+  .treatment__desc { font-size: var(--fs-sm); color: var(--fg-soft); }
+  .treatment__price { display: grid; justify-items: end; text-align: right; gap: 0.1rem; }
+  .treatment__price .caps { font-size: 0.62rem; color: var(--mocha); }
+  .treatment__value { font-family: var(--font-display); font-size: var(--fs-xl); line-height: 1; white-space: nowrap; }
+  .treatment__value.is-ask { font-family: var(--font-sans); font-size: var(--fs-xs); letter-spacing: 0.12em; text-transform: uppercase; color: var(--mocha); }
+
+  .services__foot { display: flex; gap: 0.6rem; align-items: center; font-size: var(--fs-xs); color: var(--fg-soft); padding-bottom: 2rem; }
+
+  /* Desktop con JS: capítulos apilados, la escena se fija y cambian con el scroll */
+  @media (min-width: 961px) {
+    :global(html.has-js:not(.no-motion)) .services__stage { height: 100svh; display: grid; align-content: center; }
+    :global(html.has-js:not(.no-motion)) .services__chapters { display: grid; padding: 0; gap: 0; }
+    :global(html.has-js:not(.no-motion)) .chapter { grid-area: 1 / 1; }
+    :global(html.has-js:not(.no-motion)) .services__frame { padding-top: 3rem; }
+    :global(html.has-js:not(.no-motion)) .services__foot { position: absolute; bottom: 1.5rem; left: 0; right: 0; padding: 0; }
+  }
+  @media (max-width: 960px) {
+    .services__frame { grid-template-columns: 1fr; }
+    .services__progress { display: none; }
+    :global(html.gl-on) .chapter { padding-top: 46svh; }
+    .services__chapters { gap: 4rem; }
+  }
+</style>

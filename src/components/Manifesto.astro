@@ -1,0 +1,61 @@
+---
+import Icon from './Icon.astro';
+const pillars = [
+  { icon: 'heart', title: 'Personalizado', text: 'Escuchamos qué querés y lo adaptamos a tu pelo, tu rostro y tu ocasión.' },
+  { icon: 'calendar', title: 'Con turno previo', text: 'Sin apuros ni esperas: el tiempo de tu turno es solo tuyo.' },
+  { icon: 'casa', title: 'En el estudio o a domicilio', text: 'Te atendemos en el estudio o vamos a tu casa, según lo que coordinemos.' },
+] as const;
+---
+<section class="manifesto section" id="manifiesto" aria-labelledby="manifesto-title">
+  <div class="container manifesto__grid">
+    <p class="eyebrow" data-reveal="fade">Mechón de Pelo</p>
+    <h2 id="manifesto-title" class="visually-hidden">Quiénes somos</h2>
+    <p class="manifesto__text display" data-scrub-words>
+      Creemos que cada mechón cuenta una historia. Por eso cuidamos tu pelo como si fuera nuestro:
+      con técnica, paciencia y productos que lo respetan, para que salgas sintiéndote{' '}
+      <em>vos, en tu mejor versión.</em>
+    </p>
+    <ul role="list" class="manifesto__pillars">
+      {pillars.map((p, i) => (
+        <li class="pillar" data-reveal="up" style={`--i:${i}`}>
+          <span class="pillar__icon"><Icon name={p.icon} size={26} /></span>
+          <h3 class="pillar__title">{p.title}</h3>
+          <p class="pillar__text">{p.text}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .manifesto__grid { display: grid; gap: clamp(2.5rem, 5vw, 4.5rem); }
+  .manifesto__text {
+    font-size: clamp(1.9rem, 1.1rem + 3.2vw, 4.6rem);
+    line-height: 1.08;
+    font-weight: 300;
+    max-width: 22ch;
+    max-width: 24ch;
+  }
+  .manifesto__text em { color: var(--cocoa); }
+  :global(.scrub-word) { opacity: 0.16; transition: none; }
+  :global(html:not(.has-js)) .manifesto__text :global(.scrub-word),
+  :global(html.no-motion) .manifesto__text :global(.scrub-word) { opacity: 1; }
+
+  .manifesto__pillars {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1.5rem, 3vw, 3rem);
+    margin-left: auto;
+    width: min(100%, 980px);
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+  }
+  .pillar { display: grid; gap: 0.8rem; align-content: start; }
+  .pillar__icon {
+    width: 58px; height: 58px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--sand); color: var(--cocoa);
+  }
+  .pillar__title { font-size: var(--fs-xl); }
+  .pillar__text { color: var(--fg-soft); font-size: var(--fs-sm); max-width: 30ch; }
+  @media (max-width: 800px) { .manifesto__pillars { grid-template-columns: 1fr; } }
+</style>

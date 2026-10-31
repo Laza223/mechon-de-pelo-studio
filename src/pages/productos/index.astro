@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import Icon from '../../components/Icon.astro';
+import { getContent } from '../../lib/content';
+const { products, categories } = await getContent();
+const used = categories.filter((c) => products.some((p) => p.category === c.slug));
+---
+<BaseLayout
+  title="Productos para el cuidado del cabello | Mechón de Pelo — Luján"
+  description="Shampoos, acondicionadores, mascarillas, aceites, sérums y accesorios para cuidar tu pelo en casa. Consultá stock y coordiná la entrega por WhatsApp."
+  bodyClass="page-shop"
+>
+  <section class="catalog section">
+    <div class="container">
+      <header class="catalog__head">
+        <p class="eyebrow" data-reveal="fade">Tratamientos en casa</p>
+        <h1 class="catalog__title" data-split="lines">El cuidado que empieza <em>en el estudio</em> y sigue en tu casa</h1>
+        <p class="lead" data-reveal="up">Sumá los productos que te interesan a tu consulta y te confirmamos stock, precio y entrega por WhatsApp.</p>
+      </header>
+
+      <div class="catalog__filters" role="group" aria-label="Filtrar por categoría" data-reveal="fade" data-catalog-filters>
+        <button type="button" class="gallery-filter" aria-pressed="true" data-filter="todos">Todos</button>
+        {used.map((c) => <button type="button" class="gallery-filter" aria-pressed="false" data-filter={c.slug}>{c.title}</button>)}
+      </div>
+
+      <div class="catalog__grid" data-catalog-grid>
+        {products.map((p) => <ProductCard product={p} />)}
+      </div>
+
+      <p class="catalog__note"><Icon name="info" size={18} /> Los productos están sujetos a disponibilidad. La variedad puede cambiar según las compras.</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .catalog { padding-top: calc(var(--header-h) + var(--section) * 0.6); }
+  .catalog__head { display: grid; gap: 1.6rem; max-width: 900px; margin-bottom: 3rem; }
+  .catalog__title { font-size: var(--fs-3xl); font-weight: 300; }
+  .catalog__filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 3rem; }
+  .gallery-filter {
+    padding: 0.7em 1.3em; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line);
+    font-size: var(--fs-xs); letter-spacing: 0.16em; text-transform: uppercase; transition: background-color 0.4s, color 0.4s;
+  }
+  .gallery-filter[aria-pressed='true'] { background: var(--espresso); color: var(--ivory); box-shadow: none; }
+  .catalog__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(1rem, 2vw, 2rem) clamp(1rem, 2vw, 2rem); row-gap: 3.5rem; }
+  .catalog__grid :global(.is-hidden) { display: none; }
+  .catalog__note { display: flex; gap: 0.6rem; align-items: center; margin-top: 4rem; color: var(--fg-soft); font-size: var(--fs-sm); }
+  @media (max-width: 1100px) { .catalog__grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 800px) { .catalog__grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
