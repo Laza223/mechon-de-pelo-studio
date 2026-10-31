@@ -25,15 +25,15 @@ function frames(mobile: boolean) {
   const m = mobile;
   return {
     pre: k({ seq: 0, aLogo: 1, wind: 0.4 }),
-    hero: k({ seq: 1, x: m ? 0.12 : 0.5, y: m ? 0.42 : 0.22, s: m ? 0.62 : 0.92, rz: 0.1, rx: 0.1 }),
-    manifesto: k({ seq: 1, x: m ? 0.3 : 0.56, y: m ? 0.42 : -0.06, s: m ? 0.5 : 0.82, rz: 0.14, ry: 0.35, wind: 0.6, opacity: m ? 0.55 : 1 }),
-    updo: k({ seq: 2, x: m ? 0 : 0.42, y: m ? 0.46 : -0.02, s: m ? 0.42 : 0.8, ry: 0.2, opacity: m ? 0.8 : 1 }),
-    straight: k({ seq: 3, x: m ? 0 : 0.45, y: m ? 0.46 : 0, s: m ? 0.42 : 0.78, shine: 1, opacity: m ? 0.8 : 1 }),
-    braid: k({ seq: 4, x: m ? 0 : 0.45, y: m ? 0.46 : 0, s: m ? 0.44 : 0.8, ry: 0.5, opacity: m ? 0.8 : 1 }),
+    hero: k({ seq: 1, x: m ? 0.12 : 0.5, y: m ? 0.56 : 0.22, s: m ? 0.52 : 0.92, rz: 0.1, rx: 0.1 }),
+    manifesto: k({ seq: 1, x: m ? 0.3 : 0.56, y: m ? 0.42 : -0.06, s: m ? 0.5 : 0.82, rz: 0.14, ry: 0.35, wind: 0.6, opacity: m ? 0.3 : 1 }),
+    updo: k({ seq: 2, x: m ? 0.35 : 0.42, y: m ? 0.5 : -0.02, s: m ? 0.36 : 0.8, ry: 0.2, opacity: m ? 0.5 : 1 }),
+    straight: k({ seq: 3, x: m ? 0.5 : 0.45, y: m ? 0.5 : 0, s: m ? 0.36 : 0.78, shine: 1, opacity: m ? 0.5 : 1 }),
+    braid: k({ seq: 4, x: m ? 0.5 : 0.45, y: m ? 0.5 : 0, s: m ? 0.38 : 0.8, ry: 0.5, opacity: m ? 0.55 : 1 }),
     gallery: k({ seq: 4, x: m ? 0.3 : 0.62, y: m ? 0.3 : 0.1, s: m ? 0.4 : 0.7, ry: 1.2, opacity: 0.08 }),
     shop: k({ seq: 5, dark: 1, aShop: 1, plane: 1, wind: 0.5 }),
-    steps: k({ seq: 6, x: m ? 0.2 : 0.38, y: m ? 0.5 : 0.52, s: m ? 0.5 : 0.75, rz: 0.2, opacity: 0.4, wind: 0.5 }),
-    booking: k({ seq: 6, x: m ? -0.2 : -0.6, y: m ? 0.6 : 0.3, s: m ? 0.5 : 0.8, rz: -0.25, opacity: 0.18, wind: 0.6 }),
+    steps: k({ seq: 6, x: m ? 0.2 : 0.38, y: m ? 0.5 : 0.52, s: m ? 0.5 : 0.75, rz: 0.2, opacity: m ? 0.22 : 0.4, wind: 0.5 }),
+    booking: k({ seq: 6, x: m ? -0.2 : -0.6, y: m ? 0.6 : 0.3, s: m ? 0.5 : 0.8, rz: -0.25, opacity: m ? 0.1 : 0.18, wind: 0.6 }),
     footer: k({ seq: 7, dark: 1, aFooter: 1, wind: 0.4 }),
   };
 }
