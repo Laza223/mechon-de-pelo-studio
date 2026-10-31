@@ -69,8 +69,9 @@ Sin variables de entorno el sitio usa el contenido de `src/data/seed-data.ts`, a
 
 ## Deploy (Vercel)
 
-- Importar el repo en Vercel. Framework: Astro, build `npm run build`, output `dist`.
-- Variables de entorno: `PUBLIC_SANITY_PROJECT_ID`, `PUBLIC_SANITY_DATASET` y `PUBLIC_SITE_URL`.
+- Importar el repo en Vercel. Framework: Astro, build `npm run build`, output `dist`. Node 22.x o superior.
+- **`PUBLIC_SITE_URL`** = la URL final (ej. `https://mechon-de-pelo-studio.vercel.app` o el dominio propio). Sin esto, la imagen de preview al compartir el link por WhatsApp no carga.
+- Cuando se configure Sanity: `PUBLIC_SANITY_PROJECT_ID` y `PUBLIC_SANITY_DATASET`. Sin ellas el sitio usa el contenido del seed.
 - `vercel.json` ya incluye el rewrite de `/admin/*` y el cache de assets.
 
 ## WhatsApp
@@ -83,5 +84,4 @@ Sin variables de entorno el sitio usa el contenido de `src/data/seed-data.ts`, a
 - [ ] **Número de WhatsApp** comercial.
 - [ ] Precios de **shock de keratina** y **botox capilar**.
 - [ ] Medios de pago, envíos/retiro, recargo a domicilio y política de cancelación (hoy la FAQ dice "Consultanos").
-- [ ] Confirmar el handle de Instagram: el sitio usa `@mechondepelo.studio` (lo que figura en el perfil); el brief decía `.estudio`.
 - [ ] Dominio (sugerido: `mechondepelo.com.ar`).
